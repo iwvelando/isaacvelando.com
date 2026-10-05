@@ -1,0 +1,26 @@
+{
+  "name": "isaacvelando.com",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "dev:lan": "vite --host 0.0.0.0",
+    "build": "node scripts/build-notices.mjs && tsc --noEmit && vite build && node scripts/check-dist.mjs",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "playwright test",
+    "format": "prettier --write web scripts tests *.json *.ts index.html docs *.md .github",
+    "format:check": "prettier --check web scripts tests *.json *.ts index.html docs *.md .github"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.0.0",
+    "prettier": "^3.9.9",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0"
+  }
+}
