@@ -8,7 +8,7 @@ permissions:
   contents: read
 concurrency:
   group: verify-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -82,3 +82,101 @@ jobs:
           for result in $RESULTS; do
             test "$result" = success || { echo "::error::Required job finished with $result"; exit 1; }
           done
+
+  # Publish only the artifact that passed all three verification jobs in this run.
+  deploy:
+    needs: verify
+    if: >-
+      !cancelled() && needs.verify.result == 'success' &&
+      github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: https://isaacvelando.com
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AWS_REGION: us-east-1
+      BUCKET: isaacvelando-com-site-634753796535
+      DEPLOY_ROLE_ARN: arn:aws:iam::634753796535:role/isaacvelando-com-deploy
+      DISTRIBUTION_ID: ${{ vars.DISTRIBUTION_ID }}
+      SITE_URL: https://isaacvelando.com
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: dist
+          path: dist/
+      - name: Validate artifact and destination
+        run: |
+          node scripts/check-dist.mjs
+          test -n "$DISTRIBUTION_ID" || { echo "::error::Set DISTRIBUTION_ID from the reviewed Terraform output before deployment."; exit 1; }
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: ${{ env.DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          allowed-account-ids: "634753796535"
+      - name: Upload verified content
+        run: |
+          # New fingerprinted assets arrive first; keep old ones for open pages.
+          aws s3 sync dist/assets/ "s3://$BUCKET/assets/" \
+            --cache-control 'public, max-age=31536000, immutable'
+          aws s3 sync dist/ "s3://$BUCKET/" --delete --exclude 'assets/*' \
+            --cache-control 'public, max-age=300'
+      - name: Invalidate CloudFront
+        run: |
+          id=$(aws cloudfront create-invalidation --distribution-id "$DISTRIBUTION_ID" \
+            --paths '/*' --query Invalidation.Id --output text)
+          aws cloudfront wait invalidation-completed --distribution-id "$DISTRIBUTION_ID" --id "$id"
+      - name: Verify live content and headers
+        run: |
+          curl --fail --silent --show-error --dump-header /tmp/portfolio-headers "$SITE_URL/" --output /tmp/portfolio-index.html
+          policy=$(tr -d '\r' < /tmp/portfolio-headers | sed -n 's/^[Cc]ontent-[Ss]ecurity-[Pp]olicy: //p')
+          test "$policy" = "$(tr -d '\n' < deploy/content-security-policy.txt)"
+          grep -q '<title>Isaac Velando' /tmp/portfolio-index.html
+
+  smoke:
+    needs: deploy
+    if: ${{ !cancelled() && needs.deploy.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --project=desktop --grep @smoke
+        env:
+          BASE_URL: https://isaacvelando.com
+
+  alert:
+    needs: [verify, deploy, smoke]
+    if: failure() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      TITLE: Production deploy failed
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      SHA: ${{ github.sha }}
+    steps:
+      - run: |
+          body="Verify run $RUN_URL failed on main at $SHA. The live site may be stale or broken. Fix forward, or revert the change and let it redeploy."
+          open=$(gh issue list --state open --search "\"$TITLE\" in:title" --json number,title \
+            --jq "map(select(.title == env.TITLE)) | .[0].number // empty")
+          if [ -n "$open" ]; then gh issue comment "$open" --body "$body"
+          else gh issue create --title "$TITLE" --body "$body"; fi

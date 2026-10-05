@@ -3,9 +3,8 @@
 A home for Isaac Velando’s projects, experiments, and writing. Six project links,
 a little context for each, and links to LinkedIn and GitHub.
 
-**Status: initial design draft, not yet deployed.** Hosting will be managed by
-[iwvelando/cloud-accounts](https://github.com/iwvelando/cloud-accounts). Review the
-local preview before enabling production; see [the launch checklist](docs/launch.md).
+**Status: design approved; first deployment pending infrastructure apply.** Hosting is managed by
+[iwvelando/cloud-accounts](https://github.com/iwvelando/cloud-accounts). See [the launch checklist](docs/launch.md).
 
 ## Run locally
 
@@ -39,7 +38,7 @@ make share-card     # regenerate committed social card and home-screen icon
 - **Illustrations:** `web/art.ts`. These decorative vector studies suggest each subject.
 - **Design tokens and layout:** `web/style.css`. System fonts, pale blue paper, dark ink,
   cobalt accents, and muted subject colors. Dark mode follows the visitor’s system;
-  an explicit choice in the footer persists locally when storage is available.
+  an explicit choice in the header persists locally when storage is available.
 - **Browser enhancement:** `web/main.ts`, only the theme selector. There is no UI framework
   or computation engine because this page needs neither. All content works without JS.
 
@@ -53,8 +52,11 @@ The [architecture notes](docs/architecture.md) describe the boundaries and tests
 `make build` produces a self-contained `dist/` directory. Ship its contents only,
 including the license files and committed PNGs. No SPA fallback is needed: unknown
 paths should serve `404.html` with HTTP 404. S3, CloudFront, ACM, Route53, the OIDC role,
-and response headers belong to cloud-accounts. Deployment is deliberately absent from
-this draft’s CI; the required `verify` job gates checks on every PR.
+and response headers belong to cloud-accounts. The required `verify` job gates checks on every PR. A verified push to main
+deploys the exact tested artifact through GitHub OIDC and the main-only production
+environment, then invalidates CloudFront and runs live smoke checks. Failed main runs
+open or update an issue. Set `DISTRIBUTION_ID` from the Terraform output before the
+first merge; the workflow rejects a missing value before requesting AWS credentials.
 
 The canonical URL and social metadata point to `https://isaacvelando.com/`. Shared
 links use `public/og-image.png`; iOS uses `public/apple-touch-icon.png`. Generate them

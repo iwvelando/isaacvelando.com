@@ -1,6 +1,6 @@
 name: Dependabot merge
 # Merges a Dependabot PR once its `Verify` run passes, then starts `Verify` on main,
-# which verifies the merged result. Production deployment is not enabled yet.
+# which verifies and deploys the merged result.
 #
 # Why not `gh pr merge --auto` on pull_request: a merge made with GITHUB_TOKEN
 # triggers no workflows, so main would never be verified or deployed. Starting a
@@ -59,7 +59,7 @@ jobs:
             gh pr comment "$PR" --body "Not auto-merged: this changes a major version, or its versions couldn't be read. Review and merge by hand."
           fi
 
-      - name: merge and verify
+      - name: merge and deploy
         if: steps.safe.outputs.merge == 'true'
         env:
           PR: ${{ steps.pr.outputs.number }}

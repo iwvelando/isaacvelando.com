@@ -36,7 +36,9 @@ they do not crawl external destinations on every CI run. Live sites were inspect
 the initial descriptions; see content.md.
 
 CI runs formatting/build checks, Chromium and WebKit, then the required `verify` gate.
-This draft has no deployment job. No production infrastructure has been created.
+Verified main runs deploy the same build artifact to S3 through OIDC, invalidate
+CloudFront, compare the live CSP, and run read-only smoke tests. PRs never deploy.
+The first launch depends on the corresponding cloud-accounts root being applied.
 
 The CSP uses same-origin resources only. HTTPS redirects and HSTS belong to
 CloudFront; `upgrade-insecure-requests` is unnecessary here and breaks WebKit’s

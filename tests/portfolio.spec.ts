@@ -126,3 +126,18 @@ test("keyboard skip link reaches the projects; CSP has no violations", async ({
   await expect(page.locator("#projects")).toBeFocused();
   expect(errors).toEqual([]);
 });
+
+// Theme choice must be available immediately, before scrolling through projects.
+test("appearance control is in the header and inside the first viewport", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const theme = page.getByRole("banner").getByLabel("Color theme");
+  await expect(theme).toBeVisible();
+  await expect(theme).toBeInViewport();
+  const profiles = await page
+    .getByRole("navigation", { name: "Profiles" })
+    .boundingBox();
+  const control = await theme.boundingBox();
+  expect(control!.y).toBeGreaterThanOrEqual(profiles!.y + profiles!.height);
+});

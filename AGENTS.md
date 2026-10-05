@@ -36,12 +36,12 @@ changes, and commit both PNGs. Keep dependency locks and license notices current
 ## Git and hosting
 
 Work on a branch and open a PR. Never push directly to main or force-push. All required
-checks must pass before merging. This first design remains a draft for human review:
-do not merge it or launch it until the owner accepts the design.
+checks must pass before merging. The owner approved the initial design on 2026-10-05,
+including moving the appearance control to the header.
 
-Infrastructure belongs in iwvelando/cloud-accounts, never here. Production is not
-configured yet: ci.yml verifies only. Follow docs/launch.md to wire OIDC deployment
-through the main-only production environment after the design review. Never deploy
-locally. Keep deploy/content-security-policy.txt and the eventual Terraform root in
+Infrastructure belongs in iwvelando/cloud-accounts, never here. Merging to main verifies and deploys the tested artifact through the main-only
+production environment, then runs live smoke checks. The first launch requires the
+cloud-accounts root to be applied and DISTRIBUTION_ID set first; see docs/launch.md.
+Never deploy locally. Keep deploy/content-security-policy.txt and the Terraform root in
 sync; preview and browser tests send that policy. Leave no credentials or local paths
 in committed files. MIT license; retain the reference workflow license in docs/.

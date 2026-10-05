@@ -121,6 +121,12 @@ select:focus-visible {
   align-items: center;
   padding: 32px 0;
 }
+.header-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
 .monogram {
   font-family: Georgia, serif;
   font-size: 38px;
@@ -337,6 +343,8 @@ footer p span {
   align-items: flex-end;
 }
 .theme-control {
+  color: var(--muted);
+  font-size: 12px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -408,10 +416,8 @@ select {
   .footer-details {
     gap: 15px;
   }
-  .theme-control {
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
+  .theme-control select {
+    font-size: 16px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

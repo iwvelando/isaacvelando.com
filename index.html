@@ -30,10 +30,20 @@
         <a class="monogram" href="#" aria-label="Isaac Velando, home"
           >iv<span aria-hidden="true">.</span></a
         >
-        <nav aria-label="Profiles">
-          <a href="https://www.linkedin.com/in/iwvelando/">LinkedIn</a
-          ><a href="https://github.com/iwvelando/">GitHub</a>
-        </nav>
+        <div class="header-controls">
+          <nav aria-label="Profiles">
+            <a href="https://www.linkedin.com/in/iwvelando/">LinkedIn</a
+            ><a href="https://github.com/iwvelando/">GitHub</a>
+          </nav>
+          <label class="theme-control" hidden
+            >Appearance
+            <select id="theme" aria-label="Color theme">
+              <option value="system">System</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select></label
+          >
+        </div>
       </header>
       <main>
         <section class="intro" aria-labelledby="name">
@@ -69,14 +79,7 @@
           Thanks for stopping by.<br /><span>There’s always another idea.</span>
         </p>
         <div class="footer-details">
-          <label class="theme-control" hidden
-            >Appearance
-            <select id="theme" aria-label="Color theme">
-              <option value="system">System</option>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-            </select></label
-          ><a href="https://github.com/iwvelando/isaacvelando.com"
+          <a href="https://github.com/iwvelando/isaacvelando.com"
             >About this site</a
           >
         </div>
