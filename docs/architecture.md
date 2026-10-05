@@ -11,7 +11,9 @@ projects’ toolchain without sending React, WASM, or a router to the visitor.
    catalog, or browser JS above 5 KB. License notices are generated before building.
 
 The theme is the only client state. CSS follows the system; `web/main.ts` restores
-explicit light/dark preferences and exposes the selector. Storage denial is tolerated.
+explicit light/dark preferences and exposes the icon selector. Native radios provide
+one-click selection and arrow-key navigation, with System selected by default. Each
+44-pixel target has an accessible name and a hover/focus label. Storage denial is tolerated.
 All links are ordinary same-tab anchors; users can choose a new tab normally. One
 accessible project title link covers each illustration and description.
 
