@@ -4,6 +4,18 @@ The owner approved the design on 2026-10-05 with the appearance selector moved i
 the header. The portfolio is served at `https://isaacvelando.com/`; www redirects to
 that canonical URL. Existing subdomain sites keep their independent roots.
 
+## Launch record
+
+Launched on 2026-10-05. Infrastructure PR iwvelando/cloud-accounts#15 created
+21 resources with no changes or deletions to existing resources. Site PR #1 deployed
+successfully in [run 37309693859](https://github.com/iwvelando/isaacvelando.com/actions/runs/37309693859):
+21 browser checks and both live smoke tests passed. Independent acceptance checks
+confirmed HTTPS, the www redirect, security headers, HTML 404s, and private S3 access.
+
+CloudFront: `E1PXZ0VYAD9KX6` (`d20fhcjcy71rqm.cloudfront.net`). The repository's
+`DISTRIBUTION_ID` variable is set to that Terraform output. GitHub settings were
+compared with tangent-garden; only the site homepage and generated labels differed.
+
 ## Deployment contract
 
 - Infrastructure: `iwvelando/cloud-accounts`, root `sites/isaacvelando.com`.
@@ -13,7 +25,7 @@ that canonical URL. Existing subdomain sites keep their independent roots.
 - Repository variable `DISTRIBUTION_ID`: use the new root's actual output after apply.
 - `deploy/content-security-policy.txt` must match Terraform exactly.
 
-## First launch order
+## First launch order (completed)
 
 1. Pass the infrastructure PR's checks and review every root's plan. Follow
    cloud-accounts' human-action rule for IAM trust changes; the new deployment role

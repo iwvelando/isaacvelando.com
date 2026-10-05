@@ -3,7 +3,7 @@
 A home for Isaac Velando’s projects, experiments, and writing. Six project links,
 a little context for each, and links to LinkedIn and GitHub.
 
-**Status: design approved; first deployment pending infrastructure apply.** Hosting is managed by
+**Live at [isaacvelando.com](https://isaacvelando.com/).** Hosting is managed by
 [iwvelando/cloud-accounts](https://github.com/iwvelando/cloud-accounts). See [the launch checklist](docs/launch.md).
 
 ## Run locally
@@ -55,8 +55,7 @@ paths should serve `404.html` with HTTP 404. S3, CloudFront, ACM, Route53, the O
 and response headers belong to cloud-accounts. The required `verify` job gates checks on every PR. A verified push to main
 deploys the exact tested artifact through GitHub OIDC and the main-only production
 environment, then invalidates CloudFront and runs live smoke checks. Failed main runs
-open or update an issue. Set `DISTRIBUTION_ID` from the Terraform output before the
-first merge; the workflow rejects a missing value before requesting AWS credentials.
+open or update an issue. `DISTRIBUTION_ID` is configured from the Terraform output; the workflow rejects a missing value before requesting AWS credentials.
 
 The canonical URL and social metadata point to `https://isaacvelando.com/`. Shared
 links use `public/og-image.png`; iOS uses `public/apple-touch-icon.png`. Generate them
