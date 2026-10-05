@@ -47,6 +47,7 @@ test("the complete portfolio works with JavaScript disabled", async ({
   await expect(
     page.getByRole("link", { name: "Tangent Garden", exact: true }),
   ).toBeVisible();
+  await expect(page.locator(".theme-control")).toBeHidden();
   await context.close();
 });
 
@@ -55,12 +56,24 @@ test("themes persist, follow the system, and tolerate blocked storage", async ({
 }) => {
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/");
-  const theme = page.getByLabel("Color theme");
-  await theme.selectOption("dark");
+  const theme = page.getByRole("radiogroup", { name: "Appearance" });
+  await expect(
+    theme.getByRole("radio", { name: "System", exact: true }),
+  ).toBeChecked();
+  await theme.getByRole("radio", { name: "Dark", exact: true }).check();
   await page.reload();
-  await expect(theme).toHaveValue("dark");
+  await expect(
+    theme.getByRole("radio", { name: "Dark", exact: true }),
+  ).toBeChecked();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await theme.selectOption("system");
+  await theme.getByRole("radio", { name: "System", exact: true }).check();
+  await expect
+    .poll(() => page.evaluate(() => localStorage.getItem("portfolio-theme")))
+    .toBeNull();
+  await page.reload();
+  await expect(
+    theme.getByRole("radio", { name: "System", exact: true }),
+  ).toBeChecked();
   await page.emulateMedia({ colorScheme: "dark" });
   await expect
     .poll(() =>
@@ -77,7 +90,7 @@ test("themes persist, follow the system, and tolerate blocked storage", async ({
     }),
   );
   await page.reload();
-  await theme.selectOption("light");
+  await theme.getByRole("radio", { name: "Light", exact: true }).check();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });
 
@@ -85,8 +98,8 @@ test("layout stays legible in both themes with no sideways scroll", async ({
   page,
 }, testInfo) => {
   await page.goto("/");
-  for (const theme of ["light", "dark"]) {
-    await page.getByLabel("Color theme").selectOption(theme);
+  for (const theme of ["Light", "Dark"]) {
+    await page.getByRole("radio", { name: theme, exact: true }).check();
     await expect
       .poll(() =>
         page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
@@ -132,7 +145,9 @@ test("appearance control is in the header and inside the first viewport", async 
   page,
 }) => {
   await page.goto("/");
-  const theme = page.getByRole("banner").getByLabel("Color theme");
+  const theme = page
+    .getByRole("banner")
+    .getByRole("radiogroup", { name: "Appearance" });
   await expect(theme).toBeVisible();
   await expect(theme).toBeInViewport();
   const profiles = await page
@@ -140,4 +155,34 @@ test("appearance control is in the header and inside the first viewport", async 
     .boundingBox();
   const control = await theme.boundingBox();
   expect(control!.y).toBeGreaterThanOrEqual(profiles!.y + profiles!.height);
+});
+
+test("appearance options support arrow keys and comfortable touch targets", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const group = page.getByRole("radiogroup", { name: "Appearance" });
+  const system = group.getByRole("radio", { name: "System", exact: true });
+  await system.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(
+    group.getByRole("radio", { name: "Light", exact: true }),
+  ).toBeChecked();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.keyboard.press("ArrowRight");
+  await expect(
+    group.getByRole("radio", { name: "Dark", exact: true }),
+  ).toBeChecked();
+  await page.keyboard.press("ArrowRight");
+  await expect(system).toBeChecked();
+  await expect(system).toBeFocused();
+  await page.keyboard.press("ArrowLeft");
+  await expect(
+    group.getByRole("radio", { name: "Dark", exact: true }),
+  ).toBeChecked();
+  for (const radio of await group.getByRole("radio").all()) {
+    const box = await radio.boundingBox();
+    expect(box!.width).toBeGreaterThanOrEqual(44);
+    expect(box!.height).toBeGreaterThanOrEqual(44);
+  }
 });
