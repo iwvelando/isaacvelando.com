@@ -7,6 +7,8 @@ projects’ toolchain without sending React, WASM, or a router to the visitor.
 2. `web/art.ts` produces deterministic, decorative SVG. It runs only at build/dev time.
 3. `web/render.ts` escapes catalog text and inserts content into the HTML template.
 4. Vite fingerprints CSS and the tiny theme script, copying `public/` into `dist/`.
+   It also emits `sitemap.xml` from `site.url`; `public/robots.txt` points to it.
+   Project sites are on other hosts, so the sitemap lists only this page.
 5. `scripts/check-dist.mjs` rejects missing assets, unresolved tokens, an incomplete
    catalog, or browser JS above 5 KB. License notices are generated before building.
 

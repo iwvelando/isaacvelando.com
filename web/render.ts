@@ -21,3 +21,11 @@ export function renderPage(template: string): string {
     .replace("%%PROJECTS%%", cards)
     .replace("%%ORBIT%%", orbitArt());
 }
+// One page on this host; project sites live on other hosts and are excluded by the protocol.
+export function renderSitemap(): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>${escape(site.url)}</loc></url>
+</urlset>
+`;
+}

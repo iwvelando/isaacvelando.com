@@ -6,6 +6,8 @@ for (const file of [
   "favicon.svg",
   "og-image.png",
   "apple-touch-icon.png",
+  "robots.txt",
+  "sitemap.xml",
   "LICENSE.txt",
   "THIRD-PARTY-NOTICES.txt",
 ]) {
@@ -19,6 +21,17 @@ assert.equal(
   "Incomplete portfolio",
 );
 assert(html.includes("https://isaacvelando.com/"), "Missing canonical domain");
+const sitemap = await readFile("dist/sitemap.xml", "utf8");
+assert(
+  sitemap.includes("<loc>https://isaacvelando.com/</loc>"),
+  "Sitemap missing canonical URL",
+);
+assert(
+  (await readFile("dist/robots.txt", "utf8")).includes(
+    "Sitemap: https://isaacvelando.com/sitemap.xml",
+  ),
+  "robots.txt does not reference the sitemap",
+);
 for (const match of html.matchAll(/(?:src|href)="(\.\/[^"#]+)"/g)) {
   await stat(`dist/${match[1].slice(2)}`);
 }
