@@ -5,7 +5,7 @@ export const site = {
   url: "https://isaacvelando.com/",
 };
 export type Artwork =
-  "tangent" | "shelf" | "money" | "map" | "print" | "terminal";
+  "tangent" | "shelf" | "money" | "map" | "exhibition" | "print" | "terminal";
 export interface Project {
   name: string;
   category: string;
@@ -46,6 +46,14 @@ export const projects: readonly Project[] = [
     description:
       "A tabletop companion to Mark Z. Danielewski’s novel. Follow characters through an illustrated landscape and journal, revealing the story only as far as you’ve read.",
     url: "https://toms-crossing-map.isaacvelando.com/",
+  },
+  {
+    name: "Tom’s Crossing Exhibition",
+    category: "An unofficial fan exhibition",
+    art: "exhibition",
+    description:
+      "Walk through a virtual gallery inspired by Mark Z. Danielewski’s novel, or browse its collection of artworks and objects. For readers who have finished the novel; contains spoilers.",
+    url: "https://toms-crossing-exhibition.isaacvelando.com/",
   },
   {
     name: "Household 3D",

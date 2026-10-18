@@ -17,7 +17,7 @@ const html = await readFile("dist/index.html", "utf8");
 assert(!html.includes("%%"), "Unresolved template token");
 assert.equal(
   (html.match(/<article /g) ?? []).length,
-  6,
+  7,
   "Incomplete portfolio",
 );
 assert(html.includes("https://isaacvelando.com/"), "Missing canonical domain");

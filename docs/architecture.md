@@ -32,7 +32,7 @@ assets. Drawings are thematic illustrations, not numerical claims or screenshots
 
 ## Verification boundaries
 
-Browser tests cover the six destination links, profiles, archive status, no-JS content,
+Browser tests cover the seven destination links, profiles, archive status, no-JS content,
 theme persistence/system changes/storage denial, keyboard skip navigation, CSP errors,
 responsive layout, and social-image dimensions. Desktop Chromium, narrow-phone Chromium,
 and iPhone WebKit use the production build under its CSP. Tests verify configured URLs;

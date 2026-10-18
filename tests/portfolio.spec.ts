@@ -5,6 +5,10 @@ const destinations = [
   ["Shelf Life", "https://shelf-life.isaacvelando.com/"],
   ["moneypath", "https://moneypath.isaacvelando.com/"],
   ["Tom’s Crossing Map", "https://toms-crossing-map.isaacvelando.com/"],
+  [
+    "Tom’s Crossing Exhibition",
+    "https://toms-crossing-exhibition.isaacvelando.com/",
+  ],
   ["Household 3D", "https://www.household3d.com/"],
   ["grepLinux", "https://greplinux.com/"],
 ];
@@ -16,7 +20,7 @@ test("@smoke every project and profile has a direct working link", async ({
   await expect(
     page.getByRole("heading", { name: "Isaac Velando", exact: true }),
   ).toBeVisible();
-  await expect(page.locator("article")).toHaveCount(6);
+  await expect(page.locator("article")).toHaveCount(7);
   for (const [name, url] of destinations) {
     await expect(page.getByRole("link", { name, exact: true })).toHaveAttribute(
       "href",
@@ -34,6 +38,12 @@ test("@smoke every project and profile has a direct working link", async ({
       .locator("article")
       .filter({ has: page.getByRole("heading", { name: "grepLinux" }) }),
   ).toContainText("Archived blog");
+  const exhibition = page.locator("article").filter({
+    has: page.getByRole("heading", { name: "Tom’s Crossing Exhibition" }),
+  });
+  await expect(exhibition).toContainText("unofficial");
+  await expect(exhibition).toContainText("finished the novel");
+  await expect(exhibition.locator(".project-art svg")).toBeVisible();
 });
 
 test("the complete portfolio works with JavaScript disabled", async ({
@@ -43,7 +53,13 @@ test("the complete portfolio works with JavaScript disabled", async ({
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto(baseURL!);
-  await expect(page.locator("article")).toHaveCount(6);
+  await expect(page.locator("article")).toHaveCount(7);
+  await expect(
+    page.getByRole("link", { name: "Tom’s Crossing Exhibition", exact: true }),
+  ).toHaveAttribute(
+    "href",
+    "https://toms-crossing-exhibition.isaacvelando.com/",
+  );
   await expect(
     page.getByRole("link", { name: "Tangent Garden", exact: true }),
   ).toBeVisible();

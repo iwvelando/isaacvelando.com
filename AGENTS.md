@@ -14,7 +14,7 @@ project commands must work without them or machine-specific paths.
 
 - TypeScript owns the content catalog and build-time rendering. Keep project copy,
   destinations, and artwork keys together in web/projects.ts.
-- All six current sites must be linked, with grepLinux explicitly called an archived
+- All seven current sites must be linked, with grepLinux explicitly called an archived
   blog. Preserve Tom’s Crossing’s unofficial status and do not put story spoilers here.
 - Do not invent biographical details, employment claims, testimonials, or statistics.
 - No application server, analytics, remote fonts, embedded external sites, or runtime
