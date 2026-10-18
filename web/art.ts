@@ -81,6 +81,10 @@ export function projectArt(kind: Artwork): string {
         `<g stroke="currentColor" stroke-width="1.1">${contours}<path d="M346 22 C270 70 360 130 285 169 S269 242 217 288" stroke-width="2" opacity=".65"/><path d="M125 234 Q200 200 233 192 T355 98" stroke-dasharray="4 6" opacity=".5"/></g><g fill="currentColor"><circle cx="125" cy="234" r="4"/><circle cx="355" cy="98" r="4"/></g>`,
       );
     }
+    case "exhibition":
+      return wrap(
+        `<g stroke="currentColor" stroke-width="1.2"><path d="M65 30 L195 85 H365 L495 30 M65 270 L195 215 H365 L495 270 M195 85 V215 M365 85 V215" opacity=".35"/><path d="M245 215 V115 H315 V215 M257 215 V127 H303 V215"/><path d="M95 82 L155 101 V164 L95 171 Z M107 98 L143 109 V153 L107 157 Z M405 101 L465 82 V171 L405 164 Z M417 109 L453 98 V157 L417 153 Z" opacity=".7"/><path d="M206 233 L233 222 L260 233 L233 245 Z M206 233 V252 L233 264 L260 252 V233 M233 245 V264"/><circle cx="233" cy="207" r="13"/><path d="M233 220 V227 M205 277 H355" opacity=".4"/></g>`,
+      );
     case "print": {
       const layers = Array.from(
         { length: 18 },

@@ -1,6 +1,6 @@
 # isaacvelando.com
 
-A home for Isaac Velando’s projects, experiments, and writing. Six project links,
+A home for Isaac Velando’s projects, experiments, and writing. Seven project links,
 a little context for each, and links to LinkedIn and GitHub.
 
 **Live at [isaacvelando.com](https://isaacvelando.com/).** Hosting is managed by
