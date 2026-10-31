@@ -5,7 +5,14 @@ export const site = {
   url: "https://isaacvelando.com/",
 };
 export type Artwork =
-  "tangent" | "shelf" | "money" | "map" | "exhibition" | "print" | "terminal";
+  | "tangent"
+  | "money"
+  | "almost"
+  | "shelf"
+  | "map"
+  | "exhibition"
+  | "print"
+  | "terminal";
 export interface Project {
   name: string;
   category: string;
@@ -14,6 +21,7 @@ export interface Project {
   art: Artwork;
 }
 // Curated at build time, never fetched at runtime. Sources: docs/content.md.
+// Display order is left to right, top to bottom in the two-column grid.
 export const projects: readonly Project[] = [
   {
     name: "Tangent Garden",
@@ -24,20 +32,28 @@ export const projects: readonly Project[] = [
     url: "https://tangent-garden.isaacvelando.com/",
   },
   {
-    name: "Shelf Life",
-    category: "An experiment in scale",
-    art: "shelf",
-    description:
-      "Step into a library of every possible book. Read, search, and try to comprehend its impossible scale. An interactive homage to A Short Stay in Hell and The Library of Babel.",
-    url: "https://shelf-life.isaacvelando.com/",
-  },
-  {
     name: "moneypath",
     category: "A practical what-if",
     art: "money",
     description:
       "Sketch different financial futures and see how they unfold, month by month. Compare income, spending, loans, and investments in a simulator that keeps your data in your browser.",
     url: "https://moneypath.isaacvelando.com/",
+  },
+  {
+    name: "Almost You",
+    category: "A curiosity about names",
+    art: "almost",
+    description:
+      "Find the names that sound almost like yours, and tune the formula that ranks them. A playful explorer informed by research on why we mix up names, running entirely in your browser.",
+    url: "https://almost-you.isaacvelando.com/",
+  },
+  {
+    name: "Shelf Life",
+    category: "An experiment in scale",
+    art: "shelf",
+    description:
+      "Step into a library of every possible book. Read, search, and try to comprehend its impossible scale. An interactive homage to A Short Stay in Hell and The Library of Babel.",
+    url: "https://shelf-life.isaacvelando.com/",
   },
   {
     name: "Tom’s Crossing Map",

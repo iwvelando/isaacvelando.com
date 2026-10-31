@@ -1,9 +1,11 @@
 import { test, expect } from "@playwright/test";
 
+// In display order: left to right, top to bottom.
 const destinations = [
   ["Tangent Garden", "https://tangent-garden.isaacvelando.com/"],
-  ["Shelf Life", "https://shelf-life.isaacvelando.com/"],
   ["moneypath", "https://moneypath.isaacvelando.com/"],
+  ["Almost You", "https://almost-you.isaacvelando.com/"],
+  ["Shelf Life", "https://shelf-life.isaacvelando.com/"],
   ["Tom’s Crossing Map", "https://toms-crossing-map.isaacvelando.com/"],
   [
     "Tom’s Crossing Exhibition",
@@ -20,7 +22,7 @@ test("@smoke every project and profile has a direct working link", async ({
   await expect(
     page.getByRole("heading", { name: "Isaac Velando", exact: true }),
   ).toBeVisible();
-  await expect(page.locator("article")).toHaveCount(7);
+  await expect(page.locator("article")).toHaveCount(8);
   for (const [name, url] of destinations) {
     await expect(page.getByRole("link", { name, exact: true })).toHaveAttribute(
       "href",
@@ -44,6 +46,37 @@ test("@smoke every project and profile has a direct working link", async ({
   await expect(exhibition).toContainText("unofficial");
   await expect(exhibition).toContainText("finished the novel");
   await expect(exhibition.locator(".project-art svg")).toBeVisible();
+  await expect(page.locator("article h3 a")).toHaveText(
+    destinations.map(([name]) => name),
+  );
+  const almost = page.locator("article").filter({
+    has: page.getByRole("heading", { name: "Almost You" }),
+  });
+  await expect(almost.locator(".project-art svg")).toBeVisible();
+});
+
+test("the first tiles read left to right: Tangent Garden, moneypath, Almost You", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const boxes = await Promise.all(
+    ["Tangent Garden", "moneypath", "Almost You"].map((name) =>
+      page
+        .locator("article")
+        .filter({ has: page.getByRole("heading", { name, exact: true }) })
+        .boundingBox(),
+    ),
+  );
+  const [first, second, third] = boxes.map((b) => b!);
+  if (page.viewportSize()!.width >= 900) {
+    expect(Math.abs(first.y - second.y)).toBeLessThan(2);
+    expect(second.x).toBeGreaterThan(first.x);
+    expect(third.y).toBeGreaterThan(first.y);
+    expect(Math.abs(third.x - first.x)).toBeLessThan(2);
+  } else {
+    expect(second.y).toBeGreaterThan(first.y);
+    expect(third.y).toBeGreaterThan(second.y);
+  }
 });
 
 test("the complete portfolio works with JavaScript disabled", async ({
@@ -53,7 +86,7 @@ test("the complete portfolio works with JavaScript disabled", async ({
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto(baseURL!);
-  await expect(page.locator("article")).toHaveCount(7);
+  await expect(page.locator("article")).toHaveCount(8);
   await expect(
     page.getByRole("link", { name: "Tom’s Crossing Exhibition", exact: true }),
   ).toHaveAttribute(
