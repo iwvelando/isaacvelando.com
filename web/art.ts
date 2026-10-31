@@ -37,6 +37,20 @@ export function projectArt(kind: Artwork): string {
         `<g stroke="currentColor" stroke-width=".7" opacity=".32">${normals}</g><ellipse cx="280" cy="150" rx="116" ry="98" stroke="currentColor" stroke-width="1.7"/><path d="${path((t) => [280 + 165 * Math.cos(t) ** 3, 150 + 96 * Math.sin(t) ** 3])}" stroke="currentColor" stroke-width="2"/>`,
       );
     }
+    case "almost": {
+      // Two name badges, one almost on top of the other, with nearly matching
+      // sound waves: an original study, not output from the site.
+      const wave = (phase: number) =>
+        path((t) => [
+          222 + (166 * t) / (Math.PI * 2),
+          190 + 17 * Math.sin(3 * t + phase) * Math.sin(t / 2),
+        ]);
+      const badge = (x: number, y: number) =>
+        `<rect x="${x}" y="${y}" width="232" height="158" rx="14"/><path d="M${x} ${y + 44} H${x + 232}"/><path d="M${x + 76} ${y + 22} H${x + 156}" stroke-width="5" stroke-linecap="round"/>`;
+      return wrap(
+        `<g stroke="currentColor" stroke-width="1.3"><g transform="rotate(-7 266 136)" opacity=".38">${badge(150, 57)}</g><g transform="rotate(4 306 166)">${badge(190, 87)}<path d="${wave(0)}" stroke-width="2"/><path d="${wave(0.5)}" opacity=".45" stroke-dasharray="5 5"/></g></g>`,
+      );
+    }
     case "shelf": {
       const rings = Array.from({ length: 20 }, (_, i) => {
         const r = 138 * 0.84 ** i;
