@@ -37,6 +37,35 @@ export function projectArt(kind: Artwork): string {
         `<g stroke="currentColor" stroke-width=".7" opacity=".32">${normals}</g><ellipse cx="280" cy="150" rx="116" ry="98" stroke="currentColor" stroke-width="1.7"/><path d="${path((t) => [280 + 165 * Math.cos(t) ** 3, 150 + 96 * Math.sin(t) ** 3])}" stroke="currentColor" stroke-width="2"/>`,
       );
     }
+    case "bodies": {
+      // Three bodies pulling on one another, and the wandering paths they
+      // leave: an original study, not output from the site.
+      const trail =
+        (a: number, b: number, p: number, q: number) =>
+        (t: number): [number, number] => [
+          280 + 128 * Math.sin(a * t + p) + 48 * Math.sin(b * t + q),
+          150 + 68 * Math.sin((a + 0.6) * t + q) + 30 * Math.cos(b * t + p),
+        ];
+      const bodies = [
+        trail(1, 2.7, 0.4, 1.9),
+        trail(1.3, 2.2, 2.6, 0.3),
+        trail(0.8, 3.1, 4.4, 3.5),
+      ];
+      const trails = bodies
+        .map(
+          (f, i) => `<path d="${path(f, 240)}" opacity="${0.75 - i * 0.2}"/>`,
+        )
+        .join("");
+      const suns = bodies
+        .map((f, i) => {
+          const [x, y] = f(Math.PI * 2);
+          return `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${9 - i * 1.5}"/>`;
+        })
+        .join("");
+      return wrap(
+        `<g stroke="currentColor" stroke-width="1.3">${trails}</g><g fill="currentColor">${suns}</g>`,
+      );
+    }
     case "almost": {
       // Two name badges, one almost on top of the other, with nearly matching
       // sound waves: an original study, not output from the site.
