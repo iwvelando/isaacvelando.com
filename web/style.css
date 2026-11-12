@@ -13,6 +13,7 @@
   --art-print: #e8ecf0;
   --art-terminal: #e8eaf3;
   --art-gold: #f7eec6;
+  --art-ember: #f6e5dd;
   --blue: #3259b7;
   --purple: #716088;
   --green: #326d60;
@@ -20,6 +21,7 @@
   --slate: #506c86;
   --terminal: #566285;
   --gold: #6b560f;
+  --ember: #8c4326;
   font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
   font-synthesis: none;
 }
@@ -37,6 +39,7 @@
   --art-print: #233144;
   --art-terminal: #272e46;
   --art-gold: #3a3113;
+  --art-ember: #3b2521;
   --blue: #9bb7ff;
   --purple: #c0a9df;
   --green: #90c8b6;
@@ -44,6 +47,7 @@
   --slate: #afc4db;
   --terminal: #b1bfe9;
   --gold: #ecd27a;
+  --ember: #f0b49d;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -60,6 +64,7 @@
     --art-print: #233144;
     --art-terminal: #272e46;
     --art-gold: #3a3113;
+    --art-ember: #3b2521;
     --blue: #9bb7ff;
     --purple: #c0a9df;
     --green: #90c8b6;
@@ -67,6 +72,7 @@
     --slate: #afc4db;
     --terminal: #b1bfe9;
     --gold: #ecd27a;
+    --ember: #f0b49d;
   }
 }
 * {
@@ -248,6 +254,10 @@ h2 {
 .project-art svg {
   width: 100%;
   display: block;
+}
+.project-bodies .project-art {
+  background: var(--art-ember);
+  color: var(--ember);
 }
 .project-almost .project-art {
   background: var(--art-gold);

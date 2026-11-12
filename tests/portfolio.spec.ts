@@ -4,6 +4,7 @@ import { test, expect } from "@playwright/test";
 const destinations = [
   ["Tangent Garden", "https://tangent-garden.isaacvelando.com/"],
   ["moneypath", "https://moneypath.isaacvelando.com/"],
+  ["Three-Body Simulations", "https://three-body.isaacvelando.com/"],
   ["Almost You", "https://almost-you.isaacvelando.com/"],
   ["Shelf Life", "https://shelf-life.isaacvelando.com/"],
   ["Tom’s Crossing Map", "https://toms-crossing-map.isaacvelando.com/"],
@@ -22,7 +23,7 @@ test("@smoke every project and profile has a direct working link", async ({
   await expect(
     page.getByRole("heading", { name: "Isaac Velando", exact: true }),
   ).toBeVisible();
-  await expect(page.locator("article")).toHaveCount(8);
+  await expect(page.locator("article")).toHaveCount(9);
   for (const [name, url] of destinations) {
     await expect(page.getByRole("link", { name, exact: true })).toHaveAttribute(
       "href",
@@ -49,18 +50,24 @@ test("@smoke every project and profile has a direct working link", async ({
   await expect(page.locator("article h3 a")).toHaveText(
     destinations.map(([name]) => name),
   );
+  const bodies = page.locator("article").filter({
+    has: page.getByRole("heading", { name: "Three-Body Simulations" }),
+  });
+  await expect(bodies).toContainText("unofficial");
+  await expect(bodies).toContainText("contains spoilers");
+  await expect(bodies.locator(".project-art svg")).toBeVisible();
   const almost = page.locator("article").filter({
     has: page.getByRole("heading", { name: "Almost You" }),
   });
   await expect(almost.locator(".project-art svg")).toBeVisible();
 });
 
-test("the first tiles read left to right: Tangent Garden, moneypath, Almost You", async ({
+test("the first tiles read left to right: Tangent Garden, moneypath, Three-Body Simulations", async ({
   page,
 }) => {
   await page.goto("/");
   const boxes = await Promise.all(
-    ["Tangent Garden", "moneypath", "Almost You"].map((name) =>
+    ["Tangent Garden", "moneypath", "Three-Body Simulations"].map((name) =>
       page
         .locator("article")
         .filter({ has: page.getByRole("heading", { name, exact: true }) })
@@ -86,7 +93,7 @@ test("the complete portfolio works with JavaScript disabled", async ({
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto(baseURL!);
-  await expect(page.locator("article")).toHaveCount(8);
+  await expect(page.locator("article")).toHaveCount(9);
   await expect(
     page.getByRole("link", { name: "Tom’s Crossing Exhibition", exact: true }),
   ).toHaveAttribute(

@@ -7,6 +7,7 @@ export const site = {
 export type Artwork =
   | "tangent"
   | "money"
+  | "bodies"
   | "almost"
   | "shelf"
   | "map"
@@ -38,6 +39,14 @@ export const projects: readonly Project[] = [
     description:
       "Sketch different financial futures and see how they unfold, month by month. Compare income, spending, loans, and investments in a simulator that keeps your data in your browser.",
     url: "https://moneypath.isaacvelando.com/",
+  },
+  {
+    name: "Three-Body Simulations",
+    category: "Unofficial fan simulations",
+    art: "bodies",
+    description:
+      "Ideas from Liu Cixin’s Three-Body trilogy, rebuilt as simulations you can run and change, using published science where there is any. An unofficial fan project for readers who have finished all three books; contains spoilers.",
+    url: "https://three-body.isaacvelando.com/",
   },
   {
     name: "Almost You",
